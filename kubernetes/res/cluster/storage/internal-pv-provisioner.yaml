@@ -1,0 +1,43 @@
+replicaCount: 1
+
+nfs:
+  server: cluster-server1
+  path: /opt/nfs/dynamic-pv
+  volumeName: internal-nfs-volume
+  reclaimPolicy: Retain
+
+storageClass:
+  create: true
+  name: internal-fast
+  accessModes: ReadWriteMany
+  volumeBindingMode: WaitForFirstConsumer
+  defaultClass: false
+  provisionerName: internal-fast-pv-provisioner
+
+  allowVolumeExpansion: true
+  reclaimPolicy: Delete
+  pathPattern:
+
+  annotations:
+    speed: fast
+    location: internal
+
+  # When set to false your PVs will not be archived by the provisioner upon deletion of the PVC.
+  archiveOnDelete: true
+
+
+## For RBAC support:
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: sa-internal-nfs-provisioner
+
+nodeSelector:
+  storage: true
+
+# Additional labels for any resource created
+labels: {}
